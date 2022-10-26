@@ -97,35 +97,44 @@ int main(int argc, char**argv) {
 
     int count = 0;
     int task_count = 0;
+    int last_print = 0;
     while (count < total_exe_time) {
         
         //Updates periods
         for (int i = 0; i < total_tasks; i++) {
             if (ordered_tasks[i].period <= count) {
-                if (ordered_tasks[i].period + ordered_tasks[i].original_period < total_exe_time) {
-                    printf("At count %d\n", count);
-                    printf("%d += %d\n", ordered_tasks[i].period, ordered_tasks[i].original_period);
-                    ordered_tasks[i].period += ordered_tasks[i].original_period;
-                    ordered_tasks[i].time_unit = ordered_tasks[i].original_time_unit;
-                    printf("Update period\n");
-                }
+                printf("At count %d\n", count);
+                printf("%d += %d\n", ordered_tasks[i].period, ordered_tasks[i].original_period);
+                ordered_tasks[i].period += ordered_tasks[i].original_period;
+                ordered_tasks[i].time_unit = ordered_tasks[i].original_time_unit;
+                printf("Update period\n");
             }
         }
 
         Task previous;
         int switched = 0;
+        int found = 1;
         for (int i = 0; i < total_tasks; i++) {
             if (ordered_tasks[i].time_unit > 0) {
-                if (count > 0 && strcmp(ordered_tasks[i].task_name, previous.task_name)) {
-                    //printf("%s executed for %d\n", ordered_tasks[i].task_name, task_count);
+                if (count > 0 && strcmp(ordered_tasks[i].task_name, previous.task_name) || ordered_tasks[i].time_unit > previous.time_unit) {
+                    printf("%s executed for %d\n", previous.task_name, task_count);
                     task_count = 0;
                 }
                 previous = ordered_tasks[i];
                 ordered_tasks[i].time_unit--;
                 task_count++;
                 printf("[%s] %d\n", ordered_tasks[i].task_name, ordered_tasks[i].time_unit);
+                found = 0;
                 break;
             }
+        }
+
+        if (found) {
+            if (!last_print) {
+                printf("%s executed for %d\n", previous.task_name, task_count);
+                last_print = 1;
+            }
+            printf("idle\n");
         }
         count++;
     }    
