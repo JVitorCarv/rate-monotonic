@@ -98,6 +98,7 @@ int main(int argc, char**argv) {
     int count = 0;
     int task_count = 0;
     int last_print = 0;
+    int idle_count = 0;
     while (count < total_exe_time) {
         
         //Updates periods
@@ -134,10 +135,11 @@ int main(int argc, char**argv) {
                 printf("%s executed for %d\n", previous.task_name, task_count);
                 last_print = 1;
             }
-            printf("idle\n");
-        }
+            idle_count++;
+            printf("idle, %d\n", idle_count);
+        } 
         count++;
-    }    
+    }
     print_task_array(ordered_tasks, total_tasks);
     
     return 0;
