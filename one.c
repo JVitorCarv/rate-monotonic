@@ -83,6 +83,7 @@ int main(int argc, char**argv) {
     int total_tasks = 2;                                
     Task* found_tasks = (Task*)malloc(total_tasks*sizeof(Task));  //Will store all unique tasks
 
+    /*  CASO DO ARQUIVO  */
     found_tasks[0].period = 50;
     found_tasks[0].original_period = found_tasks[0].period;
     found_tasks[0].time_unit = 25;
@@ -94,6 +95,21 @@ int main(int argc, char**argv) {
     found_tasks[1].time_unit = 35;
     found_tasks[1].original_time_unit = found_tasks[1].time_unit;
     found_tasks[1].task_name = "T2";
+
+    /*  CASO DO SLIDE  */
+    /*
+    found_tasks[0].period = 50;
+    found_tasks[0].original_period = found_tasks[0].period;
+    found_tasks[0].time_unit = 20;
+    found_tasks[0].original_time_unit = found_tasks[0].time_unit;
+    found_tasks[0].task_name = "T1";
+
+    found_tasks[1].period = 100;
+    found_tasks[1].original_period = found_tasks[1].period;
+    found_tasks[1].time_unit = 35;
+    found_tasks[1].original_time_unit = found_tasks[1].time_unit;
+    found_tasks[1].task_name = "T2";
+    */
 
     /*
     found_tasks[2].period = 30;
