@@ -5,6 +5,7 @@ typedef struct{
     int period;
     int original_period;
     int time_unit;
+    int original_time_unit;
     char* task_name;
 }Task;
 
@@ -40,13 +41,15 @@ int main(int argc, char**argv) {
     Task* found_tasks = (Task*)malloc(2*sizeof(Task));  //Will store all unique tasks
 
     found_tasks[0].period = 50;
-    found_tasks[0].original_period = 50;
+    found_tasks[0].original_period = found_tasks[0].period;
     found_tasks[0].time_unit = 25;
+    found_tasks[0].original_time_unit = found_tasks[0].time_unit;
     found_tasks[0].task_name = "T1";
 
     found_tasks[1].period = 80;
-    found_tasks[1].original_period = 80;
+    found_tasks[1].original_period = found_tasks[1].period;
     found_tasks[1].time_unit = 35;
+    found_tasks[1].original_time_unit = found_tasks[1].time_unit;
     found_tasks[1].task_name = "T2";
     
     Task ordered_tasks[total_tasks];
@@ -91,60 +94,52 @@ int main(int argc, char**argv) {
         printf("\n");
     }*/
 
-    int time_passed = 0;
     int original_exe_time = total_exe_time;
-    while (total_exe_time > 0) {
+    int count = 0;
+    while (count < total_exe_time) {
         int task_exe_time = 0;
-        time_passed = original_exe_time - total_exe_time;
+
+        for (int i = 0; i < total_tasks; i++) {
+            if (ordered_tasks[i].period < count) {
+                ordered_tasks[i].period += ordered_tasks[i].original_period;
+            }
+        }
         
         // Tries to find a task which has not finished yet
         for (int i = 0; i < total_tasks; i++) {
             if (ordered_tasks[i].time_unit > 0) {
                 task_exe_time = ordered_tasks[i].time_unit;
+
+                /* Will the task go over the total deadline? */
+                if (task_exe_time + count > total_exe_time) {
+                    task_exe_time = total_exe_time - count;
+                    // This means that the process was killed
+                    // and others different from zero should die too
+                }
+                /* Will the task go over its own period of execution? */ 
+                if (task_exe_time + count > ordered_tasks[i].period) {
+                    task_exe_time = ordered_tasks[i].period - count;
+                    // This means that the process was lost
+                }
+
+                if (task_exe_time + count > ordered_tasks[0].period) {
+                    task_exe_time = ordered_tasks[0].period - count;
+                }
+
                 /* Is there any other higher priority task that will arrive
                 during execution? */
-                int new_task_exe_time = -1;
-                if (i > 0) {
-                    for (int j = 0; j < i; j ++) {
-                        for (int k = 0; k < original_exe_time; k++) {
-                            if (insertion_timestamps[j][k] >= time_passed && insertion_timestamps[j][k] <= time_passed + task_exe_time) {
-                                new_task_exe_time = insertion_timestamps[j][k] - time_passed;
-                                printf("%d", new_task_exe_time);
-                            }
-                        }
-                    }
-                }
-                //if (new_task_exe_time > -1) task_exe_time = new_task_exe_time;
-                /* Will the task go over its own period of execution? */ 
-                /* Will the task go overt the total deadline? */
-                /*for (int j = 0; j < total_tasks; j++) {
-                    if (j != i) {
-                        for (int k = 0; k < original_exe_time; k++) {
-                            if (insertion_timestamps[j][k] >= time_passed && insertion_timestamps[j][k] <= task_exe_time + time_passed) {//Verify later
-                                ordered_tasks[i].time_unit = insertion_timestamps[j][1]; 
-                            }
-                        }
-                    }
-                }*/
 
-                total_exe_time -= task_exe_time;
+
+                count += task_exe_time;
                 printf("%s executed for %d u.t.\n", ordered_tasks[i].task_name, task_exe_time);
                 ordered_tasks[i].time_unit -= task_exe_time;
                 break;
             }
         }
-        int finished = 0;
-        for (int i = 0; i < total_tasks; i++) {
-            if (ordered_tasks[i].time_unit > 0) {
-                //printf("There is still something to be executed\n");
-                finished = 1;
-            }
-        }
-        if (finished == 0) {
-            printf("CPU Idle for %d\n", total_exe_time);
-            total_exe_time = 0;
-        }
+        
+        
     }
+    print_task_array(ordered_tasks, total_tasks);
     
     return 0;
 }
