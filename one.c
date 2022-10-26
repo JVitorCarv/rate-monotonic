@@ -179,6 +179,11 @@ int main(int argc, char**argv) {
             /* If a task is found, the idle_count must be resetted, since CPU is no longer idle */
             idle_count = 0;
         }
+
+        /* If the execution finishes while the CPU was idle, print */
+        if (count + 1 == total_exe_time && idle_count > 0) {
+            printf("idle for %d units\n", idle_count);
+        }
         count++; /* Another clock finishes */
     }
     //printf("%d", idle_count); // Should be zero
