@@ -15,6 +15,19 @@ void print_task(Task task) {
     printf("%s %d %d\n", task.task_name, task.period, task.time_unit);
 }
 
+void print_if_finished(Task task) {
+    if (task.time_unit == 0) {
+        /* If a determined task hits zero, then there is nothing left to process, therefore, it finished executing */
+        printf("%s finished execution\n", task.task_name);
+    }
+}
+
+void print_if_hold(Task previous, Task current) {
+    if (strcmp(previous.task_name, current.task_name) && previous.time_unit > 0) {
+        printf("Trocou a tarefa %s por %s\n", previous.task_name, current.task_name);
+    }
+}
+
 void print_task_array(Task* array, int size) {
     for (int i = 0; i < size; i++) {
         print_task(array[i]);
@@ -39,7 +52,7 @@ int main(int argc, char**argv) {
     printf("File name provided: %s\n", argv[1]);        
     int total_exe_time = 165;                           
     int total_tasks = 2;                                
-    Task* found_tasks = (Task*)malloc(2*sizeof(Task));  //Will store all unique tasks
+    Task* found_tasks = (Task*)malloc(total_tasks*sizeof(Task));  //Will store all unique tasks
 
     found_tasks[0].period = 50;
     found_tasks[0].original_period = found_tasks[0].period;
@@ -52,6 +65,14 @@ int main(int argc, char**argv) {
     found_tasks[1].time_unit = 35;
     found_tasks[1].original_time_unit = found_tasks[1].time_unit;
     found_tasks[1].task_name = "T2";
+
+    /*
+    found_tasks[2].period = 30;
+    found_tasks[2].original_period = found_tasks[2].period;
+    found_tasks[2].time_unit = 15;
+    found_tasks[2].original_time_unit = found_tasks[2].time_unit;
+    found_tasks[2].task_name = "T3";
+    */
     
     Task ordered_tasks[total_tasks];
 
@@ -68,37 +89,19 @@ int main(int argc, char**argv) {
     printf("Ordered tasks\n");
     print_task_array(ordered_tasks, total_tasks);
 
-    int insertion_timestamps[total_tasks][total_exe_time];
-    //Initialize matrix as 0
-    for (int i = 0; i < total_tasks; i++) {
-        for (int j = 0; j < total_exe_time; j++) {
-            insertion_timestamps[i][j] = 0;
-        }
-    }
-    // Populates insertion_timestamps
-    for (int i = 0; i < total_tasks; i++) {
-        for (int j = 1; j < total_exe_time; j++) {
-            if (ordered_tasks[i].period * j > total_exe_time) {
-                break; 
-            }
-            else {
-                insertion_timestamps[i][j] = ordered_tasks[i].period * j;
-            }
-        }
-    }
-    // Checking print
-    /*
-    for (int i = 0; i < total_tasks; i++) {
-        for (int j = 0; j < total_exe_time; j++) {
-            printf("%d ", insertion_timestamps[i][j]);
-        }
-        printf("\n");
-    }*/
-
     int count = 0;
     int task_count = 0;
     int last_print = 0;
     int idle_count = 0;
+
+    /* Initialize empty previous task */
+    Task previous;
+    previous.period = 0;
+    previous.original_period = previous.period;
+    previous.time_unit = 0;
+    previous.original_time_unit = previous.time_unit;
+    previous.task_name = "\0";
+
     while (count < total_exe_time) {
         
         //Updates periods
@@ -112,35 +115,38 @@ int main(int argc, char**argv) {
             }
         }
 
-        Task previous;
         int switched = 0;
-        int found = 1;
+        int found = 0;
         for (int i = 0; i < total_tasks; i++) {
             if (ordered_tasks[i].time_unit > 0) {
-                if (count > 0 && strcmp(ordered_tasks[i].task_name, previous.task_name) || ordered_tasks[i].time_unit > previous.time_unit) {
-                    printf("%s executed for %d\n", previous.task_name, task_count);
-                    task_count = 0;
+
+                /* If this if statement is entered, it means that a task with execution to be made was found. */
+                if (idle_count > 0) {
+                    /* An idle_count higher than zero means that for some moment in a previous loop, the
+                    CPU was idle. Therefore, it must be printed here*/
+                    printf("CPU was idle for %d\n", idle_count);
                 }
-                previous = ordered_tasks[i];
+
                 ordered_tasks[i].time_unit--;
                 task_count++;
                 printf("[%s] %d\n", ordered_tasks[i].task_name, ordered_tasks[i].time_unit);
-                found = 0;
+                print_if_finished(ordered_tasks[i]);        /* If a task finishes, print to the console */
+                print_if_hold(previous, ordered_tasks[i]);  /* If a task is switched to another task */
+                previous = ordered_tasks[i];                /* Finally, the current task becomes the previous task */
+                found = 1;
                 break;
             }
         }
 
-        if (found) {
-            if (!last_print) {
-                printf("%s executed for %d\n", previous.task_name, task_count);
-                last_print = 1;
-            }
+        /* If no task was found, the idle_count is incremented, meaning that the CPU was idle */
+        if (!found) {
             idle_count++;
             printf("idle, %d\n", idle_count);
         } else {
+            /* If a task is found, the idle_count must be resetted, since CPU is no longer idle */
             idle_count = 0;
         }
-        count++;
+        count++; /* Another clock finishes */
     }
     //printf("%d", idle_count); // Should be zero
     print_task_array(ordered_tasks, total_tasks);
