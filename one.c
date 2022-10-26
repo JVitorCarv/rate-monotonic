@@ -104,11 +104,11 @@ int main(int argc, char**argv) {
         //Updates periods
         for (int i = 0; i < total_tasks; i++) {
             if (ordered_tasks[i].period <= count) {
-                printf("At count %d\n", count);
-                printf("%d += %d\n", ordered_tasks[i].period, ordered_tasks[i].original_period);
+                //printf("At count %d\n", count);
+                //printf("%d += %d\n", ordered_tasks[i].period, ordered_tasks[i].original_period);
                 ordered_tasks[i].period += ordered_tasks[i].original_period;
                 ordered_tasks[i].time_unit = ordered_tasks[i].original_time_unit;
-                printf("Update period\n");
+                //printf("Update period\n");
             }
         }
 
@@ -137,9 +137,12 @@ int main(int argc, char**argv) {
             }
             idle_count++;
             printf("idle, %d\n", idle_count);
-        } 
+        } else {
+            idle_count = 0;
+        }
         count++;
     }
+    //printf("%d", idle_count); // Should be zero
     print_task_array(ordered_tasks, total_tasks);
     
     return 0;
