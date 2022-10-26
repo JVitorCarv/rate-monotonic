@@ -15,17 +15,46 @@ void print_task(Task task) {
     printf("%s %d %d\n", task.task_name, task.period, task.time_unit);
 }
 
-void print_if_finished(Task task) {
+int print_if_finished(Task task, int* tc) {
     if (task.time_unit == 0) {
         /* If a determined task hits zero, then there is nothing left to process, therefore, it finished executing */
-        printf("%s finished execution\n", task.task_name);
+        printf("[%s] for %d units - F\n", task.task_name, *tc);
+        *tc = 0;
+
+        return 1;
     }
+    return 0;
 }
 
-void print_if_hold(Task previous, Task current) {
+int print_if_hold(Task previous, Task current, int* tc) {
     if (strcmp(previous.task_name, current.task_name) && previous.time_unit > 0) {
-        printf("Trocou a tarefa %s por %s\n", previous.task_name, current.task_name);
+        //printf("[%s] was changed to %s\n", previous.task_name, current.task_name);
+        printf("[%s] for %d units - H\n", previous.task_name, *tc);
+        *tc = 0;
+
+        return 1;
     }
+    return 0;
+}
+
+int print_if_lost(Task previous, Task current, int* tc) {
+    if (strcmp(previous.task_name, current.task_name) == 0 && previous.time_unit < current.time_unit) {
+        printf("[%s] for %d units - L\n", previous.task_name, *tc);
+        *tc = 0;
+
+        return 1;
+    }
+    return 0;
+}
+
+int print_if_killed(int count, int total, Task current, int* tc) {
+    if (count + 1 == total && current.time_unit > 0) {
+        printf("[%s] for %d units - K\n", current.task_name, *tc);
+        *tc = 0;
+
+        return 1;
+    }
+    return 0;
 }
 
 void print_task_array(Task* array, int size) {
@@ -124,15 +153,18 @@ int main(int argc, char**argv) {
                 if (idle_count > 0) {
                     /* An idle_count higher than zero means that for some moment in a previous loop, the
                     CPU was idle. Therefore, it must be printed here*/
-                    printf("CPU was idle for %d\n", idle_count);
+                    printf("idle for %d units\n", idle_count);
                 }
 
                 ordered_tasks[i].time_unit--;
+                //printf("[%s] %d\n", ordered_tasks[i].task_name, ordered_tasks[i].time_unit);
+                print_if_finished(ordered_tasks[i], &task_count);            /* If a task finishes, print to the console */
+                print_if_hold(previous, ordered_tasks[i], &task_count);                  /* If a task is switched to another task */
+                print_if_lost(previous, ordered_tasks[i], &task_count);                  /* If a task is lost */
+                print_if_killed(count, total_exe_time, ordered_tasks[i], &task_count);   /* If a task is killed */                   /* Updates the task_count for the current execution */
+                
                 task_count++;
-                printf("[%s] %d\n", ordered_tasks[i].task_name, ordered_tasks[i].time_unit);
-                print_if_finished(ordered_tasks[i]);        /* If a task finishes, print to the console */
-                print_if_hold(previous, ordered_tasks[i]);  /* If a task is switched to another task */
-                previous = ordered_tasks[i];                /* Finally, the current task becomes the previous task */
+                previous = ordered_tasks[i];                                /* Finally, the current task becomes the previous task */
                 found = 1;
                 break;
             }
@@ -141,7 +173,7 @@ int main(int argc, char**argv) {
         /* If no task was found, the idle_count is incremented, meaning that the CPU was idle */
         if (!found) {
             idle_count++;
-            printf("idle, %d\n", idle_count);
+            //printf("idle, %d\n", idle_count);
         } else {
             /* If a task is found, the idle_count must be resetted, since CPU is no longer idle */
             idle_count = 0;
