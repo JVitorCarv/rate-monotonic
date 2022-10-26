@@ -155,15 +155,16 @@ int main(int argc, char**argv) {
                     CPU was idle. Therefore, it must be printed here*/
                     printf("idle for %d units\n", idle_count);
                 }
-
+                
                 ordered_tasks[i].time_unit--;
-                //printf("[%s] %d\n", ordered_tasks[i].task_name, ordered_tasks[i].time_unit);
-                print_if_finished(ordered_tasks[i], &task_count);            /* If a task finishes, print to the console */
                 print_if_hold(previous, ordered_tasks[i], &task_count);                  /* If a task is switched to another task */
                 print_if_lost(previous, ordered_tasks[i], &task_count);                  /* If a task is lost */
+                task_count++;                                                            /* Task count needs to be here, or else the count would go to the previous task*/
+
+                //printf("[%s] %d\n", ordered_tasks[i].task_name, ordered_tasks[i].time_unit); /* Debug print */
+                print_if_finished(ordered_tasks[i], &task_count);            /* If a task finishes, print to the console */
                 print_if_killed(count, total_exe_time, ordered_tasks[i], &task_count);   /* If a task is killed */                   /* Updates the task_count for the current execution */
-                
-                task_count++;
+
                 previous = ordered_tasks[i];                                /* Finally, the current task becomes the previous task */
                 found = 1;
                 break;
