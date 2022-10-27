@@ -38,7 +38,9 @@ int print_if_hold(Task previous, Task current, int* tc) {
 }
 
 int print_if_lost(Task previous, Task current, int* tc) {
-    if (strcmp(previous.task_name, current.task_name) == 0 && previous.time_unit < current.time_unit) {
+    // If the value of tc is 0, it means that the process was not lost since it did not execute and a new instance
+    // of the same task is currently executing in the CPU
+    if (strcmp(previous.task_name, current.task_name) == 0 && previous.time_unit < current.time_unit && *tc > 0) {
         printf("[%s] for %d units - L\n", previous.task_name, *tc);
         *tc = 0;
 
@@ -79,22 +81,25 @@ void order_tasks(Task* array, int size) {
 
 int main(int argc, char**argv) {
     printf("File name provided: %s\n", argv[1]);        
-    int total_exe_time = 165;                           
-    int total_tasks = 2;                                
+    int total_exe_time = 30;                           
+    int total_tasks = 4;                                
     Task* found_tasks = (Task*)malloc(total_tasks*sizeof(Task));  //Will store all unique tasks
 
     /*  CASO DO ARQUIVO  */
+    /*
     found_tasks[0].period = 50;
     found_tasks[0].original_period = found_tasks[0].period;
     found_tasks[0].time_unit = 25;
     found_tasks[0].original_time_unit = found_tasks[0].time_unit;
     found_tasks[0].task_name = "T1";
-
+    
+    
     found_tasks[1].period = 80;
     found_tasks[1].original_period = found_tasks[1].period;
     found_tasks[1].time_unit = 35;
     found_tasks[1].original_time_unit = found_tasks[1].time_unit;
     found_tasks[1].task_name = "T2";
+    */
 
     /*  CASO DO SLIDE  */
     /*
@@ -118,6 +123,33 @@ int main(int argc, char**argv) {
     found_tasks[2].original_time_unit = found_tasks[2].time_unit;
     found_tasks[2].task_name = "T3";
     */
+
+    /* CASO DO VIDEO */
+    found_tasks[0].period = 10;
+    found_tasks[0].original_period = found_tasks[0].period;
+    found_tasks[0].time_unit = 2;
+    found_tasks[0].original_time_unit = found_tasks[0].time_unit;
+    found_tasks[0].task_name = "T1";
+
+    found_tasks[1].period = 5;
+    found_tasks[1].original_period = found_tasks[1].period;
+    found_tasks[1].time_unit = 1;
+    found_tasks[1].original_time_unit = found_tasks[1].time_unit;
+    found_tasks[1].task_name = "T2";
+
+    found_tasks[2].period = 30;
+    found_tasks[2].original_period = found_tasks[2].period;
+    found_tasks[2].time_unit = 5;
+    found_tasks[2].original_time_unit = found_tasks[2].time_unit;
+    found_tasks[2].task_name = "T3";
+
+    found_tasks[3].period = 15;
+    found_tasks[3].original_period = found_tasks[3].period;
+    found_tasks[3].time_unit = 2;
+    found_tasks[3].original_time_unit = found_tasks[3].time_unit;
+    found_tasks[3].task_name = "T4";
+
+
     
     Task ordered_tasks[total_tasks];
 
