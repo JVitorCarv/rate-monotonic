@@ -84,12 +84,13 @@ void order_tasks(Task* array, int size) {
 
 int main(int argc, char**argv) {
     printf("File name provided: %s\n", argv[1]);        
-    int total_exe_time = 10;                           
+    int total_exe_time = 165;                           
     int total_tasks = 2;                                
     Task* found_tasks = (Task*)malloc(total_tasks*sizeof(Task));  //Will store all unique tasks
 
     /*  CASO DO ARQUIVO  */
-    /*
+    /* Total: 200 */
+    
     found_tasks[0].period = 50;
     found_tasks[0].original_period = found_tasks[0].period;
     found_tasks[0].time_unit = 25;
@@ -105,9 +106,10 @@ int main(int argc, char**argv) {
     found_tasks[1].task_name = "T2";
     found_tasks[1].completed_count = 0;
     found_tasks[1].lost_count = 0;
-    */
+    
 
     /* CASO PROPRIO 1*/
+    /* Total: 170 */
     /*
     found_tasks[0].period = 50;
     found_tasks[0].original_period = found_tasks[0].period;
@@ -135,6 +137,7 @@ int main(int argc, char**argv) {
     */
 
     /* CASO PROPRIO 2 */
+    /* Total: 210 */
     /*
     found_tasks[0].period = 70;
     found_tasks[0].original_period = found_tasks[0].period;
@@ -162,6 +165,7 @@ int main(int argc, char**argv) {
     */
 
     /* CASO PROPRIO 3 */
+    /* Total: 20 */
     /*
     found_tasks[0].period = 20;
     found_tasks[0].original_period = found_tasks[0].period;
@@ -189,7 +193,8 @@ int main(int argc, char**argv) {
     */
 
     /* CASO PROPRIO 4 */
-
+    /* Total: 10 */
+    /*
     found_tasks[0].period = 10;
     found_tasks[0].original_period = found_tasks[0].period;
     found_tasks[0].time_unit = 3;
@@ -205,6 +210,35 @@ int main(int argc, char**argv) {
     found_tasks[1].task_name = "P2";
     found_tasks[1].completed_count = 0;
     found_tasks[1].lost_count = 0;
+    */
+
+    /* CASO PROPRIO 5 */
+    /* Total: 1250000*/
+    /*
+    found_tasks[0].period = 1200000;
+    found_tasks[0].original_period = found_tasks[0].period;
+    found_tasks[0].time_unit = 550000;
+    found_tasks[0].original_time_unit = found_tasks[0].time_unit;
+    found_tasks[0].task_name = "#1";
+    found_tasks[0].completed_count = 0;
+    found_tasks[0].lost_count = 0;
+
+    found_tasks[1].period = 500000;
+    found_tasks[1].original_period = found_tasks[1].period;
+    found_tasks[1].time_unit = 100000;
+    found_tasks[1].original_time_unit = found_tasks[1].time_unit;
+    found_tasks[1].task_name = "#2";
+    found_tasks[1].completed_count = 0;
+    found_tasks[1].lost_count = 0;
+
+    found_tasks[2].period = 650000;
+    found_tasks[2].original_period = found_tasks[2].period;
+    found_tasks[2].time_unit = 250000;
+    found_tasks[2].original_time_unit = found_tasks[2].time_unit;
+    found_tasks[2].task_name = "#3";
+    found_tasks[2].completed_count = 0;
+    found_tasks[2].lost_count = 0;
+    */
 
     /*  CASO DO SLIDE  */
     /*
@@ -223,16 +257,6 @@ int main(int argc, char**argv) {
     found_tasks[1].task_name = "T2";
     found_tasks[1].completed_count = 0;
     found_tasks[1].lost_count = 0;
-    */
-
-    /*
-    found_tasks[2].period = 30;
-    found_tasks[2].original_period = found_tasks[2].period;
-    found_tasks[2].time_unit = 15;
-    found_tasks[2].original_time_unit = found_tasks[2].time_unit;
-    found_tasks[2].task_name = "T3";
-    found_tasks[2].completed_count = 0;
-    found_tasks[2].lost_count = 0;
     */
 
     /* CASO DO VIDEO https://www.youtube.com/watch?v=tCgeW_KXwHE&ab_channel=ManuArturo */
@@ -373,13 +397,14 @@ int main(int argc, char**argv) {
     }
     fprintf(file, "\n");
 
-    fprintf(file, "KILLED\n");
+    fprintf(file, "KILLED");
     for (int i = 0; i < total_tasks; i++) {
+        fprintf(file, "\n");
         /* Uncomment depending if it counts when the tasks are instance at the same time of total_exe_time */
         if (ordered_tasks[i].time_unit > 0 /*|| ordered_tasks[i].period == total_exe_time*/) {
-            fprintf(file, "[%s] %d\n", ordered_tasks[i].task_name, 1);
+            fprintf(file, "[%s] %d", ordered_tasks[i].task_name, 1);
         } else {
-            fprintf(file, "[%s] %d\n", ordered_tasks[i].task_name, 0);
+            fprintf(file, "[%s] %d", ordered_tasks[i].task_name, 0);
         }
     }
     fclose(file);
