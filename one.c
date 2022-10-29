@@ -124,9 +124,13 @@ int main(int argc, char**argv) {
         if (line_count == 0) {
             total_exe_time = atoi(line);
         } else {
+            /*if (line[strlen(line)-1] == '\n') {
+                line[strlen(line)-1] = '\0';
+            }*/
             int c = 0;
             char* token = strtok(line, " ");
-            while (token != NULL) {
+            while (token != NULL && c < 3) {
+                printf("c == %d\n", c);
                 if (c == 0) {
                     strcpy(found_tasks[line_count-1].task_name, token);
                 } else if (c == 1) {
@@ -140,8 +144,9 @@ int main(int argc, char**argv) {
                 }
                 found_tasks[line_count-1].completed_count = 0;
                 found_tasks[line_count-1].lost_count = 0;
-                token = strtok(NULL, " ");
                 c++;
+                token = strtok(NULL, " ");
+                printf("Token: %s\n", token);
             }
         }
         line_count++;
