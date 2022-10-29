@@ -84,12 +84,12 @@ void order_tasks(Task* array, int size) {
 
 int main(int argc, char**argv) {
     printf("File name provided: %s\n", argv[1]);        
-    int total_exe_time = 165;                           
-    int total_tasks = 2;                                
+    int total_exe_time = 210;                           
+    int total_tasks = 3;                                
     Task* found_tasks = (Task*)malloc(total_tasks*sizeof(Task));  //Will store all unique tasks
 
     /*  CASO DO ARQUIVO  */
-    
+    /*
     found_tasks[0].period = 50;
     found_tasks[0].original_period = found_tasks[0].period;
     found_tasks[0].time_unit = 25;
@@ -105,7 +105,59 @@ int main(int argc, char**argv) {
     found_tasks[1].task_name = "T2";
     found_tasks[1].completed_count = 0;
     found_tasks[1].lost_count = 0;
-    
+    */
+
+    /* CASO PROPRIO 1*/
+    /*
+    found_tasks[0].period = 50;
+    found_tasks[0].original_period = found_tasks[0].period;
+    found_tasks[0].time_unit = 10;
+    found_tasks[0].original_time_unit = found_tasks[0].time_unit;
+    found_tasks[0].task_name = "A";
+    found_tasks[0].completed_count = 0;
+    found_tasks[0].lost_count = 0;
+
+    found_tasks[1].period = 30;
+    found_tasks[1].original_period = found_tasks[1].period;
+    found_tasks[1].time_unit = 15;
+    found_tasks[1].original_time_unit = found_tasks[1].time_unit;
+    found_tasks[1].task_name = "B";
+    found_tasks[1].completed_count = 0;
+    found_tasks[1].lost_count = 0;
+
+    found_tasks[2].period = 60;
+    found_tasks[2].original_period = found_tasks[2].period;
+    found_tasks[2].time_unit = 5;
+    found_tasks[2].original_time_unit = found_tasks[2].time_unit;
+    found_tasks[2].task_name = "C";
+    found_tasks[2].completed_count = 0;
+    found_tasks[2].lost_count = 0;
+    */
+
+    /* CASO PROPRIO 2 */
+    found_tasks[0].period = 70;
+    found_tasks[0].original_period = found_tasks[0].period;
+    found_tasks[0].time_unit = 30;
+    found_tasks[0].original_time_unit = found_tasks[0].time_unit;
+    found_tasks[0].task_name = "TASK_A";
+    found_tasks[0].completed_count = 0;
+    found_tasks[0].lost_count = 0;
+
+    found_tasks[1].period = 45;
+    found_tasks[1].original_period = found_tasks[1].period;
+    found_tasks[1].time_unit = 20;
+    found_tasks[1].original_time_unit = found_tasks[1].time_unit;
+    found_tasks[1].task_name = "TASK_B";
+    found_tasks[1].completed_count = 0;
+    found_tasks[1].lost_count = 0;
+
+    found_tasks[2].period = 80;
+    found_tasks[2].original_period = found_tasks[2].period;
+    found_tasks[2].time_unit = 10;
+    found_tasks[2].original_time_unit = found_tasks[2].time_unit;
+    found_tasks[2].task_name = "TASK_C";
+    found_tasks[2].completed_count = 0;
+    found_tasks[2].lost_count = 0;
 
     /*  CASO DO SLIDE  */
     /*
