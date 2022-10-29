@@ -2,12 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MAX_LINE 4096
+
 typedef struct{
     int period;
     int original_period;
     int time_unit;
     int original_time_unit;
-    char* task_name;
+    char task_name[64];
     int completed_count;
     int lost_count;
 }Task;
@@ -83,231 +85,77 @@ void order_tasks(Task* array, int size) {
 }
 
 int main(int argc, char**argv) {
-    printf("File name provided: %s\n", argv[1]);        
-    int total_exe_time = 165;                           
-    int total_tasks = 2;                                
-    Task* found_tasks = (Task*)malloc(total_tasks*sizeof(Task));  //Will store all unique tasks
+    /* Checks if the number of arguments is valid */
+    if (argc != 2) {
+        if (argc <= 1) {
+            printf("Please provide at least one input file\nTerminating program...\n");
+        } else {
+            printf("Please, provide only one input file\nTerminating program...\n");
+        }
+        return 0;
+    }
 
-    /*  CASO DO ARQUIVO  */
-    /* Total: 200 */
+    /* Checks whether file exists */
+    FILE *file = fopen(argv[1], "r");
+    if (file == NULL) {
+        printf("File %s not found\n", argv[1]);
+        return 1;
+    } 
     
-    found_tasks[0].period = 50;
-    found_tasks[0].original_period = found_tasks[0].period;
-    found_tasks[0].time_unit = 25;
-    found_tasks[0].original_time_unit = found_tasks[0].time_unit;
-    found_tasks[0].task_name = "T1";
-    found_tasks[0].completed_count = 0;
-    found_tasks[0].lost_count = 0;
+    char line[MAX_LINE];    /* Will store the line */
+    int total_exe_time = 0; /* Will store the total execution time */
+
+    int total_lines = 0;    /* Will store the number of lines read in the file */
+    while(fgets(line, MAX_LINE, file)) {
+        total_lines++;
+    }
+    int total_tasks = total_lines - 1;
+    fclose(file);
+
+    /* Stores file's content into found_tasks */
     
-    found_tasks[1].period = 80;
-    found_tasks[1].original_period = found_tasks[1].period;
-    found_tasks[1].time_unit = 35;
-    found_tasks[1].original_time_unit = found_tasks[1].time_unit;
-    found_tasks[1].task_name = "T2";
-    found_tasks[1].completed_count = 0;
-    found_tasks[1].lost_count = 0;
+    file = fopen(argv[1], "r");
+
+    Task* found_tasks = (Task*)malloc(total_tasks*sizeof(Task*));
+
+    int line_count = 0;   
     
-
-    /* CASO PROPRIO 1*/
-    /* Total: 170 */
-    /*
-    found_tasks[0].period = 50;
-    found_tasks[0].original_period = found_tasks[0].period;
-    found_tasks[0].time_unit = 10;
-    found_tasks[0].original_time_unit = found_tasks[0].time_unit;
-    found_tasks[0].task_name = "A";
-    found_tasks[0].completed_count = 0;
-    found_tasks[0].lost_count = 0;
-
-    found_tasks[1].period = 30;
-    found_tasks[1].original_period = found_tasks[1].period;
-    found_tasks[1].time_unit = 15;
-    found_tasks[1].original_time_unit = found_tasks[1].time_unit;
-    found_tasks[1].task_name = "B";
-    found_tasks[1].completed_count = 0;
-    found_tasks[1].lost_count = 0;
-
-    found_tasks[2].period = 60;
-    found_tasks[2].original_period = found_tasks[2].period;
-    found_tasks[2].time_unit = 5;
-    found_tasks[2].original_time_unit = found_tasks[2].time_unit;
-    found_tasks[2].task_name = "C";
-    found_tasks[2].completed_count = 0;
-    found_tasks[2].lost_count = 0;
-    */
-
-    /* CASO PROPRIO 2 */
-    /* Total: 210 */
-    /*
-    found_tasks[0].period = 70;
-    found_tasks[0].original_period = found_tasks[0].period;
-    found_tasks[0].time_unit = 30;
-    found_tasks[0].original_time_unit = found_tasks[0].time_unit;
-    found_tasks[0].task_name = "TASK_A";
-    found_tasks[0].completed_count = 0;
-    found_tasks[0].lost_count = 0;
-
-    found_tasks[1].period = 45;
-    found_tasks[1].original_period = found_tasks[1].period;
-    found_tasks[1].time_unit = 20;
-    found_tasks[1].original_time_unit = found_tasks[1].time_unit;
-    found_tasks[1].task_name = "TASK_B";
-    found_tasks[1].completed_count = 0;
-    found_tasks[1].lost_count = 0;
-
-    found_tasks[2].period = 80;
-    found_tasks[2].original_period = found_tasks[2].period;
-    found_tasks[2].time_unit = 10;
-    found_tasks[2].original_time_unit = found_tasks[2].time_unit;
-    found_tasks[2].task_name = "TASK_C";
-    found_tasks[2].completed_count = 0;
-    found_tasks[2].lost_count = 0;
-    */
-
-    /* CASO PROPRIO 3 */
-    /* Total: 20 */
-    /*
-    found_tasks[0].period = 20;
-    found_tasks[0].original_period = found_tasks[0].period;
-    found_tasks[0].time_unit = 3;
-    found_tasks[0].original_time_unit = found_tasks[0].time_unit;
-    found_tasks[0].task_name = "P1";
-    found_tasks[0].completed_count = 0;
-    found_tasks[0].lost_count = 0;
-
-    found_tasks[1].period = 5;
-    found_tasks[1].original_period = found_tasks[1].period;
-    found_tasks[1].time_unit = 2;
-    found_tasks[1].original_time_unit = found_tasks[1].time_unit;
-    found_tasks[1].task_name = "P2";
-    found_tasks[1].completed_count = 0;
-    found_tasks[1].lost_count = 0;
-
-    found_tasks[2].period = 10;
-    found_tasks[2].original_period = found_tasks[2].period;
-    found_tasks[2].time_unit = 2;
-    found_tasks[2].original_time_unit = found_tasks[2].time_unit;
-    found_tasks[2].task_name = "P3";
-    found_tasks[2].completed_count = 0;
-    found_tasks[2].lost_count = 0;
-    */
-
-    /* CASO PROPRIO 4 */
-    /* Total: 10 */
-    /*
-    found_tasks[0].period = 10;
-    found_tasks[0].original_period = found_tasks[0].period;
-    found_tasks[0].time_unit = 3;
-    found_tasks[0].original_time_unit = found_tasks[0].time_unit;
-    found_tasks[0].task_name = "P1";
-    found_tasks[0].completed_count = 0;
-    found_tasks[0].lost_count = 0;
-
-    found_tasks[1].period = 10;
-    found_tasks[1].original_period = found_tasks[1].period;
-    found_tasks[1].time_unit = 8;
-    found_tasks[1].original_time_unit = found_tasks[1].time_unit;
-    found_tasks[1].task_name = "P2";
-    found_tasks[1].completed_count = 0;
-    found_tasks[1].lost_count = 0;
-    */
-
-    /* CASO PROPRIO 5 */
-    /* Total: 1250000*/
-    /*
-    found_tasks[0].period = 1200000;
-    found_tasks[0].original_period = found_tasks[0].period;
-    found_tasks[0].time_unit = 550000;
-    found_tasks[0].original_time_unit = found_tasks[0].time_unit;
-    found_tasks[0].task_name = "#1";
-    found_tasks[0].completed_count = 0;
-    found_tasks[0].lost_count = 0;
-
-    found_tasks[1].period = 500000;
-    found_tasks[1].original_period = found_tasks[1].period;
-    found_tasks[1].time_unit = 100000;
-    found_tasks[1].original_time_unit = found_tasks[1].time_unit;
-    found_tasks[1].task_name = "#2";
-    found_tasks[1].completed_count = 0;
-    found_tasks[1].lost_count = 0;
-
-    found_tasks[2].period = 650000;
-    found_tasks[2].original_period = found_tasks[2].period;
-    found_tasks[2].time_unit = 250000;
-    found_tasks[2].original_time_unit = found_tasks[2].time_unit;
-    found_tasks[2].task_name = "#3";
-    found_tasks[2].completed_count = 0;
-    found_tasks[2].lost_count = 0;
-    */
-
-    /*  CASO DO SLIDE  */
-    /*
-    found_tasks[0].period = 50;
-    found_tasks[0].original_period = found_tasks[0].period;
-    found_tasks[0].time_unit = 20;
-    found_tasks[0].original_time_unit = found_tasks[0].time_unit;
-    found_tasks[0].task_name = "T1";
-    found_tasks[0].completed_count = 0;
-    found_tasks[0].lost_count = 0;
-
-    found_tasks[1].period = 100;
-    found_tasks[1].original_period = found_tasks[1].period;
-    found_tasks[1].time_unit = 35;
-    found_tasks[1].original_time_unit = found_tasks[1].time_unit;
-    found_tasks[1].task_name = "T2";
-    found_tasks[1].completed_count = 0;
-    found_tasks[1].lost_count = 0;
-    */
-
-    /* CASO DO VIDEO https://www.youtube.com/watch?v=tCgeW_KXwHE&ab_channel=ManuArturo */
-    /*
-    found_tasks[0].period = 10;
-    found_tasks[0].original_period = found_tasks[0].period;
-    found_tasks[0].time_unit = 2;
-    found_tasks[0].original_time_unit = found_tasks[0].time_unit;
-    found_tasks[0].task_name = "T1";
-    found_tasks[0].completed_count = 0;
-    found_tasks[0].lost_count = 0;
-
-    found_tasks[1].period = 5;
-    found_tasks[1].original_period = found_tasks[1].period;
-    found_tasks[1].time_unit = 1;
-    found_tasks[1].original_time_unit = found_tasks[1].time_unit;
-    found_tasks[1].task_name = "T2";
-    found_tasks[1].completed_count = 0;
-    found_tasks[1].lost_count = 0;
-
-    found_tasks[2].period = 30;
-    found_tasks[2].original_period = found_tasks[2].period;
-    found_tasks[2].time_unit = 5;
-    found_tasks[2].original_time_unit = found_tasks[2].time_unit;
-    found_tasks[2].task_name = "T3";
-    found_tasks[2].completed_count = 0;
-    found_tasks[2].lost_count = 0;
-
-    found_tasks[3].period = 15;
-    found_tasks[3].original_period = found_tasks[3].period;
-    found_tasks[3].time_unit = 2;
-    found_tasks[3].original_time_unit = found_tasks[3].time_unit;
-    found_tasks[3].task_name = "T4";
-    found_tasks[3].completed_count = 0;
-    found_tasks[3].lost_count = 0;
-    */
-    
+    while(fgets(line, MAX_LINE, file)){
+        if (line_count == 0) {
+            total_exe_time = atoi(line);
+        } else {
+            int c = 0;
+            char* token = strtok(line, " ");
+            while (token != NULL) {
+                if (c == 0) {
+                    strcpy(found_tasks[line_count-1].task_name, token);
+                } else if (c == 1) {
+                    found_tasks[line_count-1].period = atoi(token);
+                    found_tasks[line_count-1].original_period = found_tasks[line_count-1].period;
+                    printf("Period: %d = %d\n", found_tasks[line_count-1].period, atoi(token));
+                } else if (c == 2) {
+                    found_tasks[line_count-1].time_unit = atoi(token);
+                    found_tasks[line_count-1].original_time_unit = found_tasks[line_count-1].time_unit;
+                    printf("TU: %d = %d\n", found_tasks[line_count-1].time_unit, atoi(token));
+                }
+                found_tasks[line_count-1].completed_count = 0;
+                found_tasks[line_count-1].lost_count = 0;
+                token = strtok(NULL, " ");
+                c++;
+            }
+        }
+        line_count++;
+    }
+    fclose(file);
+    printf("%d", line_count);
     Task ordered_tasks[total_tasks];
-
+    printf("%d", total_tasks);
     // Copy found_tasks to ordered_tasks
     for (int i = 0; i < total_tasks; i++) {
         ordered_tasks[i] = found_tasks[i];
     }
 
-    printf("%d\n", total_exe_time);
-
-    printf("Found tasks\n");
-    print_task_array(found_tasks, total_tasks);
     order_tasks(ordered_tasks, total_tasks);
-    printf("Ordered tasks\n");
-    print_task_array(ordered_tasks, total_tasks);
 
     int count = 0;
     int task_count = 0;
@@ -320,9 +168,9 @@ int main(int argc, char**argv) {
     previous.original_period = previous.period;
     previous.time_unit = 0;
     previous.original_time_unit = previous.time_unit;
-    previous.task_name = "\0";
+    memset(previous.task_name, '\0', 64*sizeof(char));
+    print_task_array(ordered_tasks, total_tasks);
 
-    FILE* file;
     file = fopen("rate_jvvc.out", "w");
     fprintf(file, "EXECUTION BY RATE\n");
     while (count < total_exe_time) {
