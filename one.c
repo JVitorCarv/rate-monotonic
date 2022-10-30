@@ -116,7 +116,7 @@ int main(int argc, char**argv) {
     
     file = fopen(argv[1], "r");
 
-    Task* found_tasks = (Task*)malloc(total_tasks*sizeof(Task*));
+    Task found_tasks[total_tasks];
     
     int line_count = 0;   
     
