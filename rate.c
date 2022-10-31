@@ -1,104 +1,13 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#define MAX_LINE 4096
-
-typedef struct{
-    int period;
-    int original_period;
-    int time_unit;
-    int original_time_unit;
-    char task_name[64];
-    int completed_count;
-    int lost_count;
-}Task;
-
-
-void print_task(Task task) {
-    printf("%s %d %d\n", task.task_name, task.period, task.time_unit);
-}
-
-int print_if_finished(Task* task, int* tc, FILE* file) {
-    if (task->time_unit == 0) {
-        /* If a determined task hits zero, then there is nothing left to process, therefore, it finished executing */
-        fprintf(file, "[%s] for %d units - F\n", task->task_name, *tc);
-        task->completed_count += 1;
-        *tc = 0;
-
-        return 1;
-    }
-    return 0;
-}
-
-int print_if_hold(Task previous, Task current, int* tc, FILE* file) {
-    if (strcmp(previous.task_name, current.task_name) && previous.time_unit > 0) {
-        //printf("[%s] was changed to %s\n", previous.task_name, current.task_name);
-        fprintf(file, "[%s] for %d units - H\n", previous.task_name, *tc);
-        *tc = 0;
-
-        return 1;
-    }
-    return 0;
-}
-
-int print_if_lost(Task previous, Task current, int* tc, FILE* file) {
-    // If the value of tc is 0, it means that the process was not lost since it did not execute and a new instance
-    // of the same task is currently executing in the CPU
-    if (strcmp(previous.task_name, current.task_name) == 0 && previous.time_unit < current.time_unit && *tc > 0) {
-        fprintf(file, "[%s] for %d units - L\n", previous.task_name, *tc);
-        *tc = 0;
-
-        return 1;
-    }
-    return 0;
-}
-
-int print_if_killed(int count, int total, Task current, int* tc, FILE* file) {
-    if (count + 1 == total && current.time_unit > 0) {
-        fprintf(file, "[%s] for %d units - K\n", current.task_name, *tc);
-        *tc = 0;
-
-        return 1;
-    }
-    return 0;
-}
-
-void print_task_array(Task* array, int size) {
-    for (int i = 0; i < size; i++) {
-        print_task(array[i]);
-    }
-}
-
-void order_tasks(Task* array, int size) {
-    // Bubblesort code reutilized from a personal repository
-    Task temp;
-    for (int i = 0; i < size - 1; i++) {
-        for (int j = 0; j < size - 1; j++) {
-            if (array[j].period > array[j + 1].period) {
-                temp = array[j + 1];
-                array[j + 1] = array[j];
-                array[j] = temp;
-            }
-        }
-    }
-}
+#include "func.h"
 
 int main(int argc, char**argv) {
     /* Checks if the number of arguments is valid */
-    if (argc != 2) {
-        if (argc <= 1) {
-            printf("Please provide at least one input file\nTerminating program...\n");
-        } else {
-            printf("Please, provide only one input file\nTerminating program...\n");
-        }
-        return 0;
-    }
+    if (check_argc(argc) != 0) return 1; 
 
     /* Checks whether file exists */
     FILE *file = fopen(argv[1], "r");
     if (file == NULL) {
-        printf("File %s not found\n", argv[1]);
+        printf("File %s not found. Did you type correclty?\n", argv[1]);
         return 1;
     } 
     
@@ -118,8 +27,6 @@ int main(int argc, char**argv) {
 
     Task found_tasks[total_tasks];
     
-    int line_count = 0;   
-    
     fgets(line, MAX_LINE, file);
     total_exe_time = atoi(line); /* Somar 1 e depois subtrair */
     
@@ -130,12 +37,11 @@ int main(int argc, char**argv) {
         found_tasks[i].completed_count = 0;
         found_tasks[i].lost_count = 0;
     }
-    print_task_array(found_tasks, total_tasks);
+    /* print_task_array(found_tasks, total_tasks); //debug print */
 
     fclose(file);
-    printf("%d", line_count);
+
     Task ordered_tasks[total_tasks];
-    printf("%d", total_tasks);
 
     // Copy found_tasks to ordered_tasks
     for (int i = 0; i < total_tasks; i++) {
@@ -156,7 +62,7 @@ int main(int argc, char**argv) {
     previous.time_unit = 0;
     previous.original_time_unit = previous.time_unit;
     memset(previous.task_name, '\0', 64*sizeof(char));
-    print_task_array(ordered_tasks, total_tasks);
+    /* print_task_array(ordered_tasks, total_tasks); //debug print */
 
     file = fopen("rate_jvvc.out", "w");
     fprintf(file, "EXECUTION BY RATE\n");
@@ -244,8 +150,7 @@ int main(int argc, char**argv) {
     }
     fclose(file);
 
-    //printf("%d", idle_count); // Should be zero
-    print_task_array(ordered_tasks, total_tasks);
+    /* print_task_array(ordered_tasks, total_tasks); //debug print */
     
     return 0;
 }
