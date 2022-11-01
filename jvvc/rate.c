@@ -1,5 +1,11 @@
 #include "func.h"
 
+/*_______________________________________________________*/
+/*|                                                     |*/
+/*|                    Rate Monotonic                   |*/
+/*|                    Vitor Carvalho                   |*/
+/*|_____________________________________________________|*/
+
 int main(int argc, char**argv) {
     /* Checks if the number of arguments is valid */
     if (check_argc(argc) != 0) return 1; 
