@@ -141,8 +141,7 @@ int main(int argc, char**argv) {
     fprintf(file, "KILLED");
     for (int i = 0; i < total_tasks; i++) {
         fprintf(file, "\n");
-        /* Uncomment depending if it counts when the tasks are instance at the same time of total_exe_time */
-        if (ordered_tasks[i].time_unit > 0 /*|| ordered_tasks[i].period == total_exe_time*/) {
+        if (ordered_tasks[i].time_unit > 0 || ordered_tasks[i].period == total_exe_time) {
             fprintf(file, "[%s] %d", ordered_tasks[i].task_name, 1);
         } else {
             fprintf(file, "[%s] %d", ordered_tasks[i].task_name, 0);
