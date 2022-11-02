@@ -34,7 +34,7 @@ int main(int argc, char**argv) {
     Task found_tasks[total_tasks];
     
     fgets(line, MAX_LINE, file);
-    total_exe_time = atoi(line); /* Somar 1 e depois subtrair */
+    total_exe_time = atoi(line);
     
     for (int i = 0; i < total_tasks; i++) {
         fscanf(file, "%s%d%d", found_tasks[i].task_name, &found_tasks[i].period, &found_tasks[i].time_unit);
@@ -47,7 +47,7 @@ int main(int argc, char**argv) {
 
     fclose(file);
 
-    Task ordered_tasks[total_tasks];
+    Task ordered_tasks[total_tasks];      /* Will store the found_tasks in order */
 
     // Copy found_tasks to ordered_tasks
     for (int i = 0; i < total_tasks; i++) {
@@ -56,12 +56,11 @@ int main(int argc, char**argv) {
 
     order_tasks(ordered_tasks, total_tasks);
 
-    int count = 0;
-    int task_count = 0;
-    int last_print = 0;
-    int idle_count = 0;
+    int count = 0;      /* Will count up to the total execution time */
+    int task_count = 0; /* Will store the number of units of execution for a given task */
+    int idle_count = 0; /* Will store the number of units of idle time */
 
-    /* Initialize empty previous task */
+    /* Initialize empty previous task for comparing purposes */
     Task previous;
     previous.period = 0;
     previous.original_period = previous.period;
@@ -77,18 +76,17 @@ int main(int argc, char**argv) {
         //Updates periods
         for (int i = 0; i < total_tasks; i++) {
             if (ordered_tasks[i].period <= count) {
-                //printf("At count %d\n", count);
-                //printf("%d += %d\n", ordered_tasks[i].period, ordered_tasks[i].original_period);
+                //printf("At count %d\n", count); //debug print
+                //printf("%d += %d\n", ordered_tasks[i].period, ordered_tasks[i].original_period); // debug print
                 if (ordered_tasks[i].time_unit > 0) {
                     ordered_tasks[i].lost_count += 1;
                 }
                 ordered_tasks[i].period += ordered_tasks[i].original_period;
                 ordered_tasks[i].time_unit = ordered_tasks[i].original_time_unit;
-                //printf("Update period\n");
+                //printf("Update period\n"); //debug print
             }
         }
 
-        int switched = 0;
         int found = 0;
         for (int i = 0; i < total_tasks; i++) {
             if (ordered_tasks[i].time_unit > 0) {
@@ -118,10 +116,9 @@ int main(int argc, char**argv) {
         /* If no task was found, the idle_count is incremented, meaning that the CPU was idle */
         if (!found) {
             idle_count++;
-            //printf("idle, %d\n", idle_count);
+            //printf("idle, %d\n", idle_count); //debug print
         } else {
-            /* If a task is found, the idle_count must be resetted, since CPU is no longer idle */
-            idle_count = 0;
+            idle_count = 0; /* If a task is found, the idle_count must be resetted, since CPU is no longer idle */
         }
 
         /* If the execution finishes while the CPU was idle, print */
