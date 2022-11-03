@@ -17,7 +17,7 @@ int print_if_finished(Task* task, int* tc, FILE* file) {
 }
 
 int print_if_hold(Task previous, Task current, int* tc, FILE* file) {
-    if (strcmp(previous.task_name, current.task_name) && previous.time_unit > 0) {
+    if (strcmp(previous.task_name, current.task_name) != 0 && previous.time_unit > 0) {
         //printf("[%s] was changed to %s\n", previous.task_name, current.task_name);
         fprintf(file, "[%s] for %d units - H\n", previous.task_name, *tc);
         *tc = 0;
