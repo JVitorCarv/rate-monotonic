@@ -13,3 +13,4 @@ func.o: func.h
 
 clean:
 	rm $(objects) rate
+	rm rate_jvvc.out
